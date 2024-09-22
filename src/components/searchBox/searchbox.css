@@ -1,7 +1,7 @@
 .searchInputContainer {
   margin-left: 10%;
   width: 40%;
-  position: static;
+  position: relative;
   background: #fff;
   height: 36px;
   border-radius: 5px;
@@ -10,12 +10,12 @@
 }
 
 .searchInput {
-  width: 518px;
+  width: 100%;
   border: 0;
   height: 36px;
   outline: none;
   box-sizing: border-box;
-  padding: 0 10px;
+  padding: 0 3%;
 }
 
 .searchIconContainer {

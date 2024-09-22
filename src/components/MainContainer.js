@@ -1,13 +1,6 @@
-import {
-  Box,
-  Button,
-  Container,
-  Grid2 as Grid,
-  TextField,
-} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./mainContainer.css";
-import { IoIosSearch } from "react-icons/io";
+import PullToRefresh from "react-pull-to-refresh";
 import SearchBox from "./searchBox/SearchBox";
 import { API_KEY, API_URL, FORECAST_API_URL } from "./utils/Constants";
 import axios from "axios";
@@ -18,9 +11,17 @@ const MainContainer = () => {
   const [currentWeather, setCurrentWeather] = useState("");
   const [error, setError] = useState(null);
   const [fiveDay, setFiveDay] = useState("");
+  const [city, setCity] = useState("");
 
   useEffect(() => {
     fetchWeather("noida");
+    const lastCity = localStorage.getItem("lastCity");
+    const lastWeatherData = localStorage.getItem("lastWeatherData");
+
+    if (lastCity && lastWeatherData) {
+      setCity(lastCity);
+      setCurrentWeather(JSON.parse(lastWeatherData));
+    }
   }, []);
 
   const fetchWeather = async (city) => {
@@ -30,6 +31,11 @@ const MainContainer = () => {
         .then((res) => {
           setCurrentWeather(res.data);
           setError("");
+          localStorage.setItem("lastCity", city);
+          localStorage.setItem(
+            "lastWeatherData",
+            JSON.stringify(currentWeather)
+          );
         });
     } catch (error) {
       setError("City Not Found or Network Error");
@@ -89,24 +95,36 @@ const MainContainer = () => {
     }
   };
 
+  const refreshData = async () => {
+    try {
+      const res = await fetchWeather(city); // Fetch updated data
+      setCurrentWeather(res.data);
+      localStorage.setItem("lastWeatherData", JSON.stringify(res.data));
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+  };
+
   return (
-    <div className="image">
-      <div>
-        <SearchBox onSearch={fetchWeather} />
-        {currentWeather && (
-          <CityWeather
-            error={error}
-            icon={currentWeather.weather[0].icon}
-            weatherText={currentWeather.weather[0].main.toLocaleUpperCase()}
-            cityName={currentWeather.name.toLocaleUpperCase()}
-            temperature={currentWeather.main.temp}
-            fetchFiveDaysWeather={fetchFiveDaysWeather}
-            fiveDay={fiveDay}
-          />
-        )}
-        {fiveDay && <FiveDayWeather fiveDay={fiveDay} />}
+    <PullToRefresh onRefresh={refreshData}>
+      <div className="image">
+        <div>
+          <SearchBox onSearch={fetchWeather} />
+          {currentWeather && (
+            <CityWeather
+              error={error}
+              icon={currentWeather.weather[0].icon}
+              weatherText={currentWeather.weather[0].main.toLocaleUpperCase()}
+              cityName={currentWeather.name.toLocaleUpperCase()}
+              temperature={currentWeather.main.temp}
+              fetchFiveDaysWeather={fetchFiveDaysWeather}
+              fiveDay={fiveDay}
+            />
+          )}
+          {fiveDay && <FiveDayWeather fiveDay={fiveDay} />}
+        </div>
       </div>
-    </div>
+    </PullToRefresh>
   );
 };
 
