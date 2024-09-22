@@ -1,0 +1,49 @@
+.searchInputContainer {
+  margin-left: 10%;
+  width: 40%;
+  position: static;
+  background: #fff;
+  height: 36px;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+}
+
+.searchInput {
+  width: 518px;
+  border: 0;
+  height: 36px;
+  outline: none;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+.searchIconContainer {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropdown-modal {
+  position: static;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 560px;
+}
+
+.dropdown-modal ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-modal li {
+  cursor: pointer;
+}
+
+.dropdown-modal li:hover {
+  background-color: #f0f0f0;
+}
